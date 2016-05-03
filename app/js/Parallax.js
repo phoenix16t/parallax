@@ -1,5 +1,13 @@
 var Parallax = function() {
-  this.elements = document.querySelectorAll('[data-parallax]');
+  var elements = document.querySelectorAll('[data-parallax]');
+  this.elements = [];
+
+  Array.prototype.forEach.call(elements, function(element) {
+
+    this.elements.push(new ParallaxElement(element));
+
+  }.bind(this));
+
 
   this.animate(0);
 };
@@ -8,41 +16,34 @@ Parallax.constructor = Parallax;
 
 Parallax.prototype.animate = function(windowPos) {
 
-  Array.prototype.forEach.call(this.elements, function(element) {
+  // Array.prototype.forEach.call(this.elements, function(element) {
 
-    var parts = element.dataset.parallax.split(',');
-    var verticalRate = parseFloat(parts[0]) || 0;
-    var verticalOffset = parseInt(parts[1]) || 0;
-    // var horizontalRate = parseFloat(parts[2]) || 0;
-    // var horizontalOffset = parseInt(parts[3]) || 0;
+  this.elements.forEach(function(element) {
 
-    console.log("parent1", element)
-    var parent = element;
+//     var parts = element.dataset.parallax.split(',');
+//     var verticalRate = parseFloat(parts[0]) || 0;
+//     var verticalOffset = parseInt(parts[1]) || 0;
+//     // var horizontalRate = parseFloat(parts[2]) || 0;
+//     // var horizontalOffset = parseInt(parts[3]) || 0;
+// // debugger
+//     console.log("parent1", element)
+//     var parent = element.offsetParent;
 
-
-
-    var top = 0, left = 0;
-    do {
-        top += parent.offsetTop  || 0;
-        // left += parent.offsetLeft || 0;
-        parent = parent.offsetParent;
-    } while(parent);
-
-    // return {
-    //     top: top,
-    //     left: left
-    // };
-
-debugger
+//     var top = 0;
+//     while(parent) {
+//       top += parent.offsetTop  || 0;
+//       parent = parent.offsetParent;
+//     }
 
 
 
-    var newVerticalPos = ((windowPos + verticalOffset - top) * verticalRate);
-    element.style.top = newVerticalPos + 'px';
+//     console.log("top", top)
+
+    element.changePosition(windowPos);
 
     // var newHorizontalPos = ((windowPos + horizontalOffset - element.parentNode.offsetleft) * horizontalRate);
     // element.style.left = newHorizontalPos + 'px';
   }.bind(this));
 
-  console.log("  ")
+  // console.log("  ")
 };

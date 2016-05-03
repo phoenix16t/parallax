@@ -11,7 +11,7 @@ gulp.task('sass', function() {
   return gulp.src('./app/scss/*.scss')
     .pipe(sass())
     .pipe(concat('all.css'))
-    .pipe(gulp.dest('./app/'))
+    .pipe(gulp.dest('./app/dist/'))
     .pipe(browserSync.stream());
 });
 
@@ -24,15 +24,18 @@ gulp.task('lint', function() {
 gulp.task('scripts', function() {
   return gulp.src('./app/js/*.js')
     .pipe(concat('all.js'))
-    .pipe(gulp.dest('./app/'));
+    .pipe(gulp.dest('./app/dist/'));
 });
 
-gulp.task('reload', function() {
+gulp.task('reload', function(done) {
   browserSync.reload();
-  return;
+  done();
 });
 
-gulp.task('js', ['lint', 'scripts', 'reload']);
+gulp.task('js', ['lint', 'scripts'], function(done) {
+  browserSync.reload();
+  done();
+});
 
 gulp.task('serve', ['sass', 'lint', 'scripts'], function() {
     browserSync.init({
@@ -41,9 +44,6 @@ gulp.task('serve', ['sass', 'lint', 'scripts'], function() {
 });
 
 gulp.task('watch', function() {
-  // gulp.watch('./app/js/*.js', ['js']);
-  // gulp.watch('./app/scss/*.scss', ['sass']);
-  // gulp.watch("./app/*.html").on('change', browserSync.reload);
 
   watch('app/js/*.js', function() {
     gulp.start('js');

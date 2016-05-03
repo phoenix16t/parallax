@@ -7,6 +7,15 @@
 
 h1 {
   position: absolute;
+  margin: 0;
+  opacity: 1;
+  transition: opacity .1s;
+  &.hidden {
+    opacity: 0;
+  }
+  &.fixed {
+    position: fixed;
+  }
 }
 
 .test {
