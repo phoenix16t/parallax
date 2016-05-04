@@ -5,7 +5,7 @@
   position: relative;
 }
 
-h1 {
+h1, h2, h3 {
   position: absolute;
   margin: 0;
   opacity: 1;
@@ -36,4 +36,16 @@ h1 {
 
 .fourth {
   margin-left: 600px;
+}
+
+.hero {
+  width: 600px;
+  height: 400px;
+  margin: 0 auto;
+  border: 1px solid green;
+  position: relative;
+}
+
+.center {
+  left: 300px;
 }

@@ -15,7 +15,12 @@ var ParallaxElement = function(element) {
   this.verticalRate = parseFloat(parts[0]) || 0;
   this.verticalOffset = parseInt(parts[1]) || 0;
 
-  this.adjustedOffset = this.verticalOffset - this.parentTop;
+  if(this.verticalRate === 1) {
+    this.adjustedOffset = this.verticalOffset;
+  }
+  else {
+    this.adjustedOffset = this.verticalOffset - this.parentTop;
+  }
 
   this.el.classList.add('fixed');
 };
@@ -23,7 +28,12 @@ var ParallaxElement = function(element) {
 ParallaxElement.constructor = ParallaxElement;
 
 ParallaxElement.prototype.changePosition = function(windowPos) {
-  var posOnScreen = ((windowPos + this.adjustedOffset) * (this.verticalRate - 1));
+  if(this.verticalRate === 1) {
+    var posOnScreen = this.adjustedOffset;
+  }
+  else {
+    var posOnScreen = ((windowPos + this.adjustedOffset) * (this.verticalRate - 1));
+  }
   this.el.style.top = posOnScreen + 'px';
 
   var absolutePos = windowPos + posOnScreen;
