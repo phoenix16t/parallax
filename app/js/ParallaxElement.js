@@ -1,47 +1,56 @@
 var ParallaxElement = function(element) {
+
   var top = 0;
-  var parts = element.dataset.parallax.split(',');
+  var left = 0;
+
   var parent = element.offsetParent;
+  var parts = element.dataset.parallax.split(',');
   var parentOffsetHeight = parent.offsetHeight;
+  var parentOffsetWidth = parent.offsetWidth;
 
   while(parent) {
     top += parent.offsetTop || 0;
+    left += parent.offsetLeft || 0;
     parent = parent.offsetParent;
   }
 
-  this.el = element;
-  this.parentTop = top;
-  this.parentBottom = top + parentOffsetHeight;
-  this.verticalRate = parseFloat(parts[0]) || 0;
-  this.verticalOffset = parseInt(parts[1]) || 0;
+  this.element = element;
+  this.xRate = parseFloat(parts[0]) - 1 || 0;
+  this.yRate = parseFloat(parts[1]) - 1 || 0;
 
-  if(this.verticalRate === 1) {
-    this.adjustedOffset = this.verticalOffset;
-  }
-  else {
-    this.adjustedOffset = this.verticalOffset - this.parentTop;
-  }
+  this.topOffset = element.offsetTop;
+  this.leftOffset = element.offsetLeft;
 
-  this.el.classList.add('fixed');
+  this.boundaryTop = top;
+  this.boundaryBottom = top + parentOffsetHeight;
+  this.boundaryLeft = left;
+  this.boundaryRight = left + parentOffsetWidth;
+
+  this.element.classList.add('fixed');
+
+  this.changePosition(0);
 };
 
 ParallaxElement.constructor = ParallaxElement;
 
 ParallaxElement.prototype.changePosition = function(windowPos) {
-  if(this.verticalRate === 1) {
-    var posOnScreen = this.adjustedOffset;
-  }
-  else {
-    var posOnScreen = ((windowPos + this.adjustedOffset) * (this.verticalRate - 1));
-  }
-  this.el.style.top = posOnScreen + 'px';
+// console.log('kjh')
+  var posOnScreen = this.topOffset + ((windowPos - this.boundaryTop) * this.yRate);
+  // var horPosOnScreen = this.leftOffset + ((windowPos - this.boundaryTop) * this.xRate);
 
-  var absolutePos = windowPos + posOnScreen;
+  var horPosOnScreen = this.leftOffset + this.boundaryLeft + ((windowPos - this.boundaryTop) * this.xRate);
+  // console.log("horPosOnScreen", horPosOnScreen)
 
-  if(absolutePos > this.parentTop && absolutePos < this.parentBottom) {
-    this.el.classList.remove('hidden');
-  }
-  else {
-    this.el.classList.add('hidden');
-  }
+  this.element.style.top = posOnScreen + 'px';
+// this.element.style.transform = 'translateY(' + posOnScreen + 'px)';
+  this.element.style.left = horPosOnScreen + 'px';
+  // this.element.style.transform = 'translateZ(' + windowPos + 'px)';
+  // this.element.style.webkitTransform = 'translateZ(' + windowPos + 'px)';
+
+  // if(windowPos >= this.boundaryTop && windowPos <= this.boundaryBottom) {
+  //   this.element.classList.remove('hidden');
+  // }
+  // else {
+  //   this.element.classList.add('hidden');
+  // }
 };
