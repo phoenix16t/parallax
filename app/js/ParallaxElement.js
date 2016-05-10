@@ -62,8 +62,10 @@ ParallaxElement.prototype.init = function() {
   this.toggleConstraints(0);
 };
 
+//////////////////////////////////////////////////
+///// main functions
+//////////////////////////////////////////////////
 ParallaxElement.prototype.changePosition = function(windowPos) {
-
   var movePos = windowPos - this.boundaryTop;
 
   this.resetTransform();
@@ -83,6 +85,9 @@ ParallaxElement.prototype.resetTransform = function() {
   this.element.style.transform = '';
 };
 
+//////////////////////////////////////////////////
+///// position functions
+//////////////////////////////////////////////////
 ParallaxElement.prototype.setX = function(movePos) {
   var xPosOnScreen = this.leftOffset + this.boundaryLeft + (movePos * this.xRate);
   this.element.style.left = xPosOnScreen + 'px';
@@ -108,6 +113,9 @@ ParallaxElement.prototype.resetZ = function() {
   this.element.style.transform = 'scaleX(1) scaleY(1)';
 };
 
+//////////////////////////////////////////////////
+///// rotations functions
+//////////////////////////////////////////////////
 ParallaxElement.prototype.rotateX = function(movePos) {
   var xRotation = movePos * this.xRotateRate;
   this.element.style.transform += ' rotateX(' + xRotation + 'deg)';
@@ -123,6 +131,9 @@ ParallaxElement.prototype.rotateZ = function(movePos) {
   this.element.style.transform += ' rotateZ(' + zRotation + 'deg)';
 };
 
+//////////////////////////////////////////////////
+///// constraint function
+//////////////////////////////////////////////////
 ParallaxElement.prototype.toggleConstraints = function(windowPos) {
   if(this.constrain === 'constrain') {
     if(windowPos >= this.boundaryTop && windowPos <= this.boundaryBottom) {
