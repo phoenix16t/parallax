@@ -15,19 +15,22 @@ var ParallaxElement = function(element) {
   }
 
   this.element = element;
-  this.xRate = parseFloat(parts[0]) || 0;
-  this.yRate = parseFloat(parts[1]) || 0;
-  this.zRate = parseFloat(parts[2]) || 0;
-
-  this.constrain = parts[3] || null;
-  this.hidden = false;
 
   this.topOffset = element.offsetTop;
   this.leftOffset = element.offsetLeft;
-
   this.boundaryTop = top;
   this.boundaryBottom = top + parentOffsetHeight;
   this.boundaryLeft = left;
+
+  this.xRate = parseFloat(parts[0]) || 0;
+  this.yRate = parseFloat(parts[1]) || 0;
+  this.zRate = parseFloat(parts[2]) || 0;
+  this.xRotateRate = parseFloat(parts[3]) || 0;
+  this.yRotateRate = parseFloat(parts[4]) || 0;
+  this.zRotateRate = parseFloat(parts[5]) || 0;
+
+  this.constrain = parts[6] || null;
+  this.hidden = false;
 
   this.init();
 };
@@ -37,33 +40,47 @@ ParallaxElement.constructor = ParallaxElement;
 ParallaxElement.prototype.init = function() {
   this.element.classList.add('fixed');
 
+  // set initial position
   this.setX(0);
   this.setY(0);
   this.resetZ();
-  this.toggleConstrain(0);
+
+  // set initial orientation
+  this.rotateX(0);
+  this.rotateY(0);
+  this.rotateZ(0);
+
+  // set list of animatable parallaxes
+  this.parallaxList = [];
+  if(this.xRate !== 0) { this.parallaxList.push(this.setX.bind(this)); }
+  if(this.yRate !== 0) { this.parallaxList.push(this.setY.bind(this)); }
+  if(this.zRate !== 0) { this.parallaxList.push(this.setZ.bind(this)); }
+  if(this.xRotateRate !== 0) { this.parallaxList.push(this.rotateX.bind(this)); }
+  if(this.yRotateRate !== 0) { this.parallaxList.push(this.rotateY.bind(this)); }
+  if(this.zRotateRate !== 0) { this.parallaxList.push(this.rotateZ.bind(this)); }
+
+  this.toggleConstraints(0);
 };
 
 ParallaxElement.prototype.changePosition = function(windowPos) {
 
   var movePos = windowPos - this.boundaryTop;
 
-  // constrain element
-  this.toggleConstrain(windowPos);
+  this.resetTransform();
 
+  // constrain element
+  this.toggleConstraints(windowPos);
+
+  // animate parallaxes
   if(!this.hidden) {
-    // move x
-    if(this.xRate !== 0) {
-      this.setX(movePos);
-    }
-    // move y
-    if(this.yRate !== 0) {
-      this.setY(movePos);
-    }
-    // move z
-    if(this.zRate !== 0) {
-      this.setZ(movePos);
-    }
+    this.parallaxList.forEach(function(parallaxDirection) {
+      parallaxDirection(movePos);
+    }.bind(this));
   }
+};
+
+ParallaxElement.prototype.resetTransform = function() {
+  this.element.style.transform = '';
 };
 
 ParallaxElement.prototype.setX = function(movePos) {
@@ -91,8 +108,23 @@ ParallaxElement.prototype.resetZ = function() {
   this.element.style.transform = 'scaleX(1) scaleY(1)';
 };
 
-ParallaxElement.prototype.toggleConstrain = function(windowPos) {
-  if(this.constrain === 'con') {
+ParallaxElement.prototype.rotateX = function(movePos) {
+  var xRotation = movePos * this.xRotateRate;
+  this.element.style.transform += ' rotateX(' + xRotation + 'deg)';
+};
+
+ParallaxElement.prototype.rotateY = function(movePos) {
+  var yRotation = movePos * this.yRotateRate;
+  this.element.style.transform += ' rotateY(' + yRotation + 'deg)';
+};
+
+ParallaxElement.prototype.rotateZ = function(movePos) {
+  var zRotation = movePos * this.zRotateRate;
+  this.element.style.transform += ' rotateZ(' + zRotation + 'deg)';
+};
+
+ParallaxElement.prototype.toggleConstraints = function(windowPos) {
+  if(this.constrain === 'constrain') {
     if(windowPos >= this.boundaryTop && windowPos <= this.boundaryBottom) {
       this.element.classList.remove('hidden');
       this.hidden = false;
