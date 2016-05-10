@@ -15,8 +15,12 @@ var ParallaxElement = function(element) {
   }
 
   this.element = element;
-  this.xRate = parseFloat(parts[0]) - 1 || 0;
-  this.yRate = parseFloat(parts[1]) - 1 || 0;
+  this.xRate = parseFloat(parts[0]) || 0;
+  this.yRate = parseFloat(parts[1]) || 0;
+  this.zRate = parseFloat(parts[2]) || 0;
+
+  this.constrain = parts[3] || null;
+  this.hidden = false;
 
   this.topOffset = element.offsetTop;
   this.leftOffset = element.offsetLeft;
@@ -24,33 +28,78 @@ var ParallaxElement = function(element) {
   this.boundaryTop = top;
   this.boundaryBottom = top + parentOffsetHeight;
   this.boundaryLeft = left;
-  this.boundaryRight = left + parentOffsetWidth;
 
-  this.element.classList.add('fixed');
-
-  this.changePosition(0);
+  this.init();
 };
 
 ParallaxElement.constructor = ParallaxElement;
 
+ParallaxElement.prototype.init = function() {
+  this.element.classList.add('fixed');
+
+  this.setX(0);
+  this.setY(0);
+  this.resetZ();
+  this.toggleConstrain(0);
+};
+
 ParallaxElement.prototype.changePosition = function(windowPos) {
-// console.log('kjh')
-  var posOnScreen = this.topOffset + ((windowPos - this.boundaryTop) * this.yRate);
-  // var horPosOnScreen = this.leftOffset + ((windowPos - this.boundaryTop) * this.xRate);
 
-  var horPosOnScreen = this.leftOffset + this.boundaryLeft + ((windowPos - this.boundaryTop) * this.xRate);
-  // console.log("horPosOnScreen", horPosOnScreen)
+  var movePos = windowPos - this.boundaryTop;
 
-  this.element.style.top = posOnScreen + 'px';
-// this.element.style.transform = 'translateY(' + posOnScreen + 'px)';
-  this.element.style.left = horPosOnScreen + 'px';
-  // this.element.style.transform = 'translateZ(' + windowPos + 'px)';
-  // this.element.style.webkitTransform = 'translateZ(' + windowPos + 'px)';
+  // constrain element
+  this.toggleConstrain(windowPos);
 
-  // if(windowPos >= this.boundaryTop && windowPos <= this.boundaryBottom) {
-  //   this.element.classList.remove('hidden');
-  // }
-  // else {
-  //   this.element.classList.add('hidden');
-  // }
+  if(!this.hidden) {
+    // move x
+    if(this.xRate !== 0) {
+      this.setX(movePos);
+    }
+    // move y
+    if(this.yRate !== 0) {
+      this.setY(movePos);
+    }
+    // move z
+    if(this.zRate !== 0) {
+      this.setZ(movePos);
+    }
+  }
+};
+
+ParallaxElement.prototype.setX = function(movePos) {
+  var xPosOnScreen = this.leftOffset + this.boundaryLeft + (movePos * this.xRate);
+  this.element.style.left = xPosOnScreen + 'px';
+};
+
+ParallaxElement.prototype.setY = function(movePos) {
+  var yPosOnScreen = this.topOffset + (movePos * this.yRate);
+  this.element.style.top = yPosOnScreen + 'px';
+};
+
+ParallaxElement.prototype.setZ = function(movePos) {
+  var zPosOnScreen = movePos * this.zRate;
+
+  if(zPosOnScreen > 0) {
+    this.element.style.transform = 'scaleX(' + zPosOnScreen + ') scaleY(' + zPosOnScreen + ')';
+  }
+  else if(zPosOnScreen <= 0) {
+    this.element.style.transform = 'scaleX(0) scaleY(0)';
+  }
+};
+
+ParallaxElement.prototype.resetZ = function() {
+  this.element.style.transform = 'scaleX(1) scaleY(1)';
+};
+
+ParallaxElement.prototype.toggleConstrain = function(windowPos) {
+  if(this.constrain === 'con') {
+    if(windowPos >= this.boundaryTop && windowPos <= this.boundaryBottom) {
+      this.element.classList.remove('hidden');
+      this.hidden = false;
+    }
+    else {
+      this.element.classList.add('hidden');
+      this.hidden = true;
+    }
+  }
 };
