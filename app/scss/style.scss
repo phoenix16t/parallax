@@ -123,30 +123,38 @@ h1, h2, h3 {
   top: 200px;
 }
 
-.mountain {
+.mountain, .beach {
   position: absolute;
   top: 0;
   bottom: 0;
   left: 0;
   right: 0;
   border: 1px solid black;
-  background-image: url('images/mountain.jpg');
   background-attachment: fixed;
   background-size: cover;
+}
+.mountain {
+  background-image: url('images/mountain.jpg');
+}
+.beach {
+  background-image: url('images/beach.jpg');
 }
 
 .birds-container {
   position: relative;
-  height: 300px;
+  height: 400px;
   width: 100px;
-  top: -200px;
+  top: -600px;
   border: 1px solid red;
 }
 
 .birds {
   position: absolute;
-  left: 600px;
+  left: 400px;
   height: 400px;
   width: 400px;
   background-image: url('images/birds.gif');
+  &.left {
+    left: 120px;
+  }
 }

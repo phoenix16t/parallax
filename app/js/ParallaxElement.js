@@ -98,12 +98,14 @@ ParallaxElement.prototype.setY = function(movePos) {
 };
 
 ParallaxElement.prototype.setZ = function(movePos) {
+  var zPosOnScreen;
+
   if(this.zRate > 0) {
-    var zPosOnScreen = movePos * this.zRate;
+    zPosOnScreen = movePos * this.zRate;
     this.element.style.transform = 'scaleX(' + zPosOnScreen + ') scaleY(' + zPosOnScreen + ')';
   }
   else if(this.zRate < 0) {
-    var zPosOnScreen = (this.parentHeight - movePos) * this.zRate;
+    zPosOnScreen = (this.parentHeight - movePos) * this.zRate;
     this.element.style.transform = 'scaleX(' + zPosOnScreen + ') scaleY(' + zPosOnScreen + ') rotateZ(180deg)';
   }
 };
