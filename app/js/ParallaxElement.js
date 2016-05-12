@@ -5,8 +5,7 @@ var ParallaxElement = function(element) {
 
   var parent = element.offsetParent;
   var parts = element.dataset.parallax.split(',');
-  var parentOffsetHeight = parent.offsetHeight;
-  var parentOffsetWidth = parent.offsetWidth;
+  this.parentHeight = parent.offsetHeight;
 
   while(parent) {
     top += parent.offsetTop || 0;
@@ -19,7 +18,7 @@ var ParallaxElement = function(element) {
   this.topOffset = element.offsetTop;
   this.leftOffset = element.offsetLeft;
   this.boundaryTop = top;
-  this.boundaryBottom = top + parentOffsetHeight;
+  this.boundaryBottom = top + this.parentHeight;
   this.boundaryLeft = left;
 
   this.xRate = parseFloat(parts[0]) || 0;
@@ -68,10 +67,10 @@ ParallaxElement.prototype.init = function() {
 ParallaxElement.prototype.changePosition = function(windowPos) {
   var movePos = windowPos - this.boundaryTop;
 
-  this.resetTransform();
-
   // constrain element
   this.toggleConstraints(windowPos);
+
+  this.resetTransform();
 
   // animate parallaxes
   if(!this.hidden) {
@@ -99,13 +98,13 @@ ParallaxElement.prototype.setY = function(movePos) {
 };
 
 ParallaxElement.prototype.setZ = function(movePos) {
-  var zPosOnScreen = movePos * this.zRate;
-
-  if(zPosOnScreen > 0) {
+  if(this.zRate > 0) {
+    var zPosOnScreen = movePos * this.zRate;
     this.element.style.transform = 'scaleX(' + zPosOnScreen + ') scaleY(' + zPosOnScreen + ')';
   }
-  else if(zPosOnScreen <= 0) {
-    this.element.style.transform = 'scaleX(0) scaleY(0)';
+  else if(this.zRate < 0) {
+    var zPosOnScreen = (this.parentHeight - movePos) * this.zRate;
+    this.element.style.transform = 'scaleX(' + zPosOnScreen + ') scaleY(' + zPosOnScreen + ') rotateZ(180deg)';
   }
 };
 
