@@ -6,7 +6,7 @@ var ParallaxElement = function(element) {
   var parent = element.offsetParent;
   var parts = element.dataset.parallax.split(',');
   this.parentHeight = parent.offsetHeight;
-
+// debugger
   while(parent) {
     top += parent.offsetTop || 0;
     left += parent.offsetLeft || 0;
@@ -14,6 +14,8 @@ var ParallaxElement = function(element) {
   }
 
   this.element = element;
+
+  this.movePosMarker = document.querySelector('.movePos');
 
   this.topOffset = element.offsetTop;
   this.leftOffset = element.offsetLeft;
@@ -51,21 +53,33 @@ ParallaxElement.prototype.init = function() {
 
   // set list of animatable parallaxes
   this.parallaxList = [];
+
   if(this.xRate !== 0) { this.parallaxList.push(this.setX.bind(this)); }
   if(this.yRate !== 0) { this.parallaxList.push(this.setY.bind(this)); }
   if(this.zRate !== 0) { this.parallaxList.push(this.setZ.bind(this)); }
   if(this.xRotateRate !== 0) { this.parallaxList.push(this.rotateX.bind(this)); }
   if(this.yRotateRate !== 0) { this.parallaxList.push(this.rotateY.bind(this)); }
   if(this.zRotateRate !== 0) { this.parallaxList.push(this.rotateZ.bind(this)); }
-
-  this.toggleConstraints(0);
 };
 
 //////////////////////////////////////////////////
 ///// main functions
 //////////////////////////////////////////////////
 ParallaxElement.prototype.changePosition = function(windowPos) {
-  var movePos = windowPos - this.boundaryTop;
+  // var movePos = windowPos - this.boundaryTop;
+
+
+
+
+  var movePos = windowPos - this.boundaryTop + (window.innerHeight / 2);// - (this.parentHeight / 2);
+  // console.log("windowPos", movePos, windowPos, this.boundaryTop, window.innerHeight / 2, this.parentHeight / 2);
+  // windowPos += (window.innerHeight / 2);
+// console.log("height", window.innerHeight, movePos)
+
+  console.log("tihs.boundaryTop", windowPos, this.boundaryTop)
+
+
+  // this.movePosMarker.style.top = windowPos + 'px';
 
   // constrain element
   this.toggleConstraints(windowPos);
@@ -89,11 +103,13 @@ ParallaxElement.prototype.resetTransform = function() {
 //////////////////////////////////////////////////
 ParallaxElement.prototype.setX = function(movePos) {
   var xPosOnScreen = this.leftOffset + this.boundaryLeft + (movePos * this.xRate);
+  // var xPosOnScreen = this.leftOffset + (movePos * this.xRate);
+  console.log("this.leftOffset", this.leftOffset, this.boundaryLeft, movePos)
   this.element.style.left = xPosOnScreen + 'px';
 };
 
 ParallaxElement.prototype.setY = function(movePos) {
-  var yPosOnScreen = this.topOffset + (movePos * this.yRate);
+  var yPosOnScreen = this.topOffset + (movePos * this.yRate);// + (window.innerHeight / 2) - (this.parentHeight / 2);
   this.element.style.top = yPosOnScreen + 'px';
 };
 

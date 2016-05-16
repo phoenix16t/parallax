@@ -1,3 +1,20 @@
+body {
+  // background-color: black;
+}
+
+.midpt {
+  position: fixed;
+  width: 30px;
+  border: 1px solid red;
+  top: 50%;
+}
+
+.movePos {
+  position: absolute;
+  width: 30px;
+  border: 1px solid blue;
+}
+
 .box {
   border: 1px solid green;
   height: 1000px;
@@ -163,15 +180,17 @@ h1, h2, h3 {
   width: 200px;
   height: 200px;
   position: relative;
-  perspective: 10000px;
+  // perspective: 1000px;
 }
 
 #cube {
   width: 100%;
   height: 100%;
   position: absolute;
-  top: 300px;
   transform-style: preserve-3d;
+  &.fixed {
+    position: fixed;
+  }
 }
 
 #cube div {
@@ -183,16 +202,24 @@ h1, h2, h3 {
   border: 2px solid black;
 }
 
-#cube .front  { transform: rotateY(   0deg ); }
-#cube .back   { transform: rotateX( 180deg ); }
-#cube .right  { transform: rotateY(  90deg ); }
-#cube .left   { transform: rotateY( -90deg ); }
-#cube .top    { transform: rotateX(  90deg ); }
-#cube .bottom { transform: rotateX( -90deg ); }
-
 #cube .front  { transform: rotateY(   0deg ) translateZ( 100px ); }
 #cube .back   { transform: rotateX( 180deg ) translateZ( 100px ); }
 #cube .right  { transform: rotateY(  90deg ) translateZ( 100px ); }
 #cube .left   { transform: rotateY( -90deg ) translateZ( 100px ); }
 #cube .top    { transform: rotateX(  90deg ) translateZ( 100px ); }
 #cube .bottom { transform: rotateX( -90deg ) translateZ( 100px ); }
+
+// #cube .front,
+// #cube .back,
+// #cube .top,
+// #cube .bottom  {
+//   border-left: 0;
+//   border-right: 0;
+//   border-top: 2px solid yellow;
+//   border-bottom: 2px solid yellow;
+// }
+
+// #cube .right,
+// #cube .left   {
+//   border: 0;
+// }
